@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 16-12-2024 a las 23:14:59
+-- Tiempo de generación: 17-12-2024 a las 16:10:58
 -- Versión del servidor: 8.0.30
 -- Versión de PHP: 8.2.24
 
@@ -32,6 +32,7 @@ CREATE TABLE `loans` (
   `receivingUser` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `loanDate` datetime NOT NULL,
   `deliveryDate` datetime DEFAULT NULL,
+  `equipmentObservations` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `approval` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `state` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `dateRegister` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
@@ -41,10 +42,11 @@ CREATE TABLE `loans` (
 -- Volcado de datos para la tabla `loans`
 --
 
-INSERT INTO `loans` (`id`, `receivingUser`, `loanDate`, `deliveryDate`, `approval`, `state`, `dateRegister`) VALUES
-(63, '1', '2024-12-16 15:56:00', '2024-12-19 15:56:00', 'Pendiente', 'Disponible', '2024-12-16 15:56:06'),
-(64, '1', '2024-12-17 16:03:00', '2024-12-19 16:03:00', 'Pendiente', 'Disponible', '2024-12-16 16:03:59'),
-(65, '1', '2024-12-16 16:04:00', '2024-12-20 16:04:00', 'Pendiente', 'Disponible', '2024-12-16 16:04:54');
+INSERT INTO `loans` (`id`, `receivingUser`, `loanDate`, `deliveryDate`, `equipmentObservations`, `approval`, `state`, `dateRegister`) VALUES
+(63, '1', '2024-12-16 15:56:00', '2024-12-19 15:56:00', NULL, 'Pendiente', 'Disponible', '2024-12-16 15:56:06'),
+(64, '1', '2024-12-17 16:03:00', '2024-12-19 16:03:00', 'Buen estado.', 'Finalizado', 'Entregado en buen estado', '2024-12-16 16:03:59'),
+(65, '1', '2024-12-16 16:04:00', '2024-12-20 16:04:00', 'Pantalla rota ', 'En uso', 'Ocupado', '2024-12-16 16:04:54'),
+(66, '1', '2024-12-17 09:09:00', '2024-12-19 09:09:00', NULL, 'Pendiente', 'Disponible', '2024-12-17 09:09:41');
 
 -- --------------------------------------------------------
 
@@ -66,7 +68,8 @@ CREATE TABLE `loan_devices` (
 INSERT INTO `loan_devices` (`id`, `loan_id`, `device_serial`, `device_name`) VALUES
 (69, 63, '12323312312', 'Notebook Azus'),
 (70, 64, '12312312', 'PALA'),
-(71, 65, '231232423', 'PC GAMER 50');
+(71, 65, '231232423', 'PC GAMER 50'),
+(72, 66, '12312312', 'PALA');
 
 -- --------------------------------------------------------
 
@@ -90,7 +93,7 @@ INSERT INTO `tools` (`serial`, `nombre`, `descripcion`, `imagen`, `estado`) VALU
 ('12312312', 'PALA', 'PALA DE CONTRUCCION', 'uploads\\1729287035333.jpg', 'Disponible'),
 ('12323312312', 'Notebook Azus', 'Azus i9 16gb RAM', 'uploads\\1728748350893.jpg', 'Disponible'),
 ('124234534', 'Thinkpad', 'ThinkPad ryzen 9', 'uploads\\1728748540076.jpg', 'Disponible'),
-('231232423', 'PC GAMER 50', 'FULL SATCK PC', 'uploads\\1729089056361.jpg', 'Disponible'),
+('231232423', 'PC GAMER 50', 'FULL SATCK PC', 'uploads\\1729089056361.jpg', 'Ocupado'),
 ('65643453', 'Notebook', 'PC Notebook i9', 'uploads\\1728748403810.jpg', 'Disponible');
 
 -- --------------------------------------------------------
@@ -158,13 +161,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `loans`
 --
 ALTER TABLE `loans`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT de la tabla `loan_devices`
 --
 ALTER TABLE `loan_devices`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- Restricciones para tablas volcadas
