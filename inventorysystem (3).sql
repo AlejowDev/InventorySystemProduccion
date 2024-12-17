@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 17-12-2024 a las 16:10:58
+-- Tiempo de generación: 17-12-2024 a las 22:32:00
 -- Versión del servidor: 8.0.30
 -- Versión de PHP: 8.2.24
 
@@ -43,10 +43,11 @@ CREATE TABLE `loans` (
 --
 
 INSERT INTO `loans` (`id`, `receivingUser`, `loanDate`, `deliveryDate`, `equipmentObservations`, `approval`, `state`, `dateRegister`) VALUES
-(63, '1', '2024-12-16 15:56:00', '2024-12-19 15:56:00', NULL, 'Pendiente', 'Disponible', '2024-12-16 15:56:06'),
+(63, '1', '2024-12-16 15:56:00', '2024-12-19 15:56:00', NULL, 'Finalizado', 'Entregado en buen estado', '2024-12-16 15:56:06'),
 (64, '1', '2024-12-17 16:03:00', '2024-12-19 16:03:00', 'Buen estado.', 'Finalizado', 'Entregado en buen estado', '2024-12-16 16:03:59'),
-(65, '1', '2024-12-16 16:04:00', '2024-12-20 16:04:00', 'Pantalla rota ', 'En uso', 'Ocupado', '2024-12-16 16:04:54'),
-(66, '1', '2024-12-17 09:09:00', '2024-12-19 09:09:00', NULL, 'Pendiente', 'Disponible', '2024-12-17 09:09:41');
+(65, '1', '2024-12-16 16:04:00', '2024-12-20 16:04:00', 'Pantalla rota ', 'Finalizado', 'Entregado en mal estado', '2024-12-16 16:04:54'),
+(66, '1', '2024-12-17 09:09:00', '2024-12-19 09:09:00', NULL, 'Finalizado', 'Entregado en buen estado', '2024-12-17 09:09:41'),
+(70, '1', '2024-12-17 17:23:00', '2024-12-18 17:23:00', 'Le falta un cable.', 'En uso', 'Ocupado', '2024-12-17 17:23:44');
 
 -- --------------------------------------------------------
 
@@ -69,7 +70,9 @@ INSERT INTO `loan_devices` (`id`, `loan_id`, `device_serial`, `device_name`) VAL
 (69, 63, '12323312312', 'Notebook Azus'),
 (70, 64, '12312312', 'PALA'),
 (71, 65, '231232423', 'PC GAMER 50'),
-(72, 66, '12312312', 'PALA');
+(72, 66, '12312312', 'PALA'),
+(79, 70, '12323312312', 'Notebook Azus'),
+(80, 70, '124234534', 'Thinkpad');
 
 -- --------------------------------------------------------
 
@@ -91,9 +94,9 @@ CREATE TABLE `tools` (
 
 INSERT INTO `tools` (`serial`, `nombre`, `descripcion`, `imagen`, `estado`) VALUES
 ('12312312', 'PALA', 'PALA DE CONTRUCCION', 'uploads\\1729287035333.jpg', 'Disponible'),
-('12323312312', 'Notebook Azus', 'Azus i9 16gb RAM', 'uploads\\1728748350893.jpg', 'Disponible'),
-('124234534', 'Thinkpad', 'ThinkPad ryzen 9', 'uploads\\1728748540076.jpg', 'Disponible'),
-('231232423', 'PC GAMER 50', 'FULL SATCK PC', 'uploads\\1729089056361.jpg', 'Ocupado'),
+('12323312312', 'Notebook Azus', 'Azus i9 16gb RAM', 'uploads\\1728748350893.jpg', 'Ocupado'),
+('124234534', 'Thinkpad', 'ThinkPad ryzen 9', 'uploads\\1728748540076.jpg', 'Ocupado'),
+('231232423', 'PC GAMER 50', 'FULL SATCK PC', 'uploads\\1729089056361.jpg', 'Disponible'),
 ('65643453', 'Notebook', 'PC Notebook i9', 'uploads\\1728748403810.jpg', 'Disponible');
 
 -- --------------------------------------------------------
@@ -119,7 +122,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`document`, `name`, `email`, `phone`, `studentNumber`, `username`, `password`, `role`, `isTemporaryPassword`) VALUES
-('0', 'Administrador', 'administrador@administrador.com', '0', '0', 'Administrador', '$2b$10$PJrW2l7m5G5mzAKrToFOGuEqo.mSme5CwhYXJ1/PAl6s98AK2rkD2', 'admin', 0),
+('0', 'administrador', 'administrador@administrador.com', '0', '0', 'Administrador', '$2b$10$PJrW2l7m5G5mzAKrToFOGuEqo.mSme5CwhYXJ1/PAl6s98AK2rkD2', 'admin', 0),
 ('1', 'estudiante', 'esrudiante@estudiante.com', '0', '0', 'estudiante', '$2b$10$WFKnLFWjHYXWyrWYjI/4eeTzcxO1enIVbRDAj4Bxd/9uWtJghBwbC', 'student', 0),
 ('2', 'moderador', 'moderador@moderador.com', '0', '0', 'moderador', '$2b$10$Z5YLFRmw9MwPfIBhQkIPkuivOGEiopRETjlU37ZDlNAbtsnTW1Yyy', 'moderator', 0),
 ('4', 'superadmin', 'superadmin@superadmin.com', '0', '0', 'superadmin', '$2b$10$ddg5ZZ6kOnUHCsyJSDQaFOApzi3l0j0gEuIGkBwj7Vpry0LNN6116', 'superadmin', 0);
@@ -161,13 +164,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `loans`
 --
 ALTER TABLE `loans`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT de la tabla `loan_devices`
 --
 ALTER TABLE `loan_devices`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- Restricciones para tablas volcadas

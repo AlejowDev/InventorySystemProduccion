@@ -115,7 +115,9 @@ const StudentLoans = () => {
                       Fecha de Entrega
                     </CTableHeaderCell>
                     <CTableHeaderCell className="bg-body-tertiary">Aprobación</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary">Estado</CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary">
+                      Estado dispositivo
+                    </CTableHeaderCell>
                     <CTableHeaderCell className="bg-body-tertiary">
                       ¿Como recibio el equipo?
                     </CTableHeaderCell>
@@ -230,18 +232,30 @@ const StudentLoans = () => {
                         </CTableDataCell>
                         <CTableDataCell style={{ borderColor: 'white' }}>
                           {canEdit ? (
-                            <CButton
-                              color="primary"
-                              onClick={() => {
-                                setEditingObservations((prev) => ({
-                                  ...prev,
-                                  [loan.id]: '',
-                                }))
-                                handleOpenModal(loan)
-                              }}
-                            >
-                              Marcar estado
-                            </CButton>
+                            <div>
+                              <p
+                                style={{
+                                  color: '#0cff00',
+                                  fontWeight: 'bold',
+                                  margin: '5px 0',
+                                  textAlign: 'center',
+                                }}
+                              >
+                                ¡Tu préstamo fue aprobado!
+                              </p>
+                              <CButton
+                                color="primary"
+                                onClick={() => {
+                                  setEditingObservations((prev) => ({
+                                    ...prev,
+                                    [loan.id]: '',
+                                  }))
+                                  handleOpenModal(loan)
+                                }}
+                              >
+                                Marcar estado del dispositivo
+                              </CButton>
+                            </div>
                           ) : (
                             <CFormInput
                               type="text"
@@ -268,7 +282,7 @@ const StudentLoans = () => {
       {/* Modal para agregar observaciones */}
       <CModal visible={showModal} onClose={() => setShowModal(false)}>
         <CModalHeader>
-          <CModalTitle>Agregar Observaciones</CModalTitle>
+          <CModalTitle>¿Como recibiste el dispositivo?</CModalTitle>
         </CModalHeader>
         <CModalBody>
           {currentLoan && (

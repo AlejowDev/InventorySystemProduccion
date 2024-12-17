@@ -37,6 +37,7 @@ const SuperAdminLoans = () => {
   // Nuevos estados para los filtros
   const [approvalFilter, setApprovalFilter] = useState('')
   const [stateFilter, setStateFilter] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     refreshLoans()
@@ -49,12 +50,12 @@ const SuperAdminLoans = () => {
         const sortedLoans = response.data.sort((a, b) => {
           const aIsFinalizado = a.approval === 'Finalizado' ? 1 : 0
           const bIsFinalizado = b.approval === 'Finalizado' ? 1 : 0
-        
+
           // Primero separar finalizados de no finalizados
           if (aIsFinalizado !== bIsFinalizado) {
             return aIsFinalizado - bIsFinalizado
           }
-        
+
           // Si ambos son igual respecto a finalizado, ordena por fecha
           return new Date(b.dateRegister) - new Date(a.dateRegister)
         })
@@ -183,11 +184,18 @@ const SuperAdminLoans = () => {
     saveAs(data, 'prestamos.xlsx')
   }
 
-  // Filtrar los préstamos basados en los filtros seleccionados
   const filteredLoans = loans.filter((loan) => {
     const matchApproval = approvalFilter === '' || loan.approval === approvalFilter
     const matchState = stateFilter === '' || loan.state === stateFilter
-    return matchApproval && matchState
+  
+    // Verificamos el término de búsqueda en nombre del estudiante o dispositivos
+    const search = searchTerm.toLowerCase()
+    const studentNameMatch = loan.receivingUserName && loan.receivingUserName.toLowerCase().includes(search)
+    const deviceNameMatch = loan.deviceNames && loan.deviceNames.toLowerCase().includes(search)
+  
+    const matchSearch = search === '' || studentNameMatch || deviceNameMatch
+  
+    return matchApproval && matchState && matchSearch
   })
 
   return (
@@ -237,6 +245,17 @@ const SuperAdminLoans = () => {
                   <option value="Ocupado">Ocupado</option>
                   <option value="Por Agendar">Por Agendar</option>
                 </CFormSelect>
+              </CCol>
+            </CRow>
+            <CRow className="mb-3">
+              <CCol xs={12}>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Buscar por nombre de estudiante o dispositivo..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
               </CCol>
             </CRow>
 

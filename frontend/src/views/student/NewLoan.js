@@ -75,6 +75,14 @@ const NewLoan = () => {
       })
   }
 
+  const handleRemoveFromCart = (index) => {
+    setCart((prevCart) => {
+      const newCart = [...prevCart]
+      newCart.splice(index, 1)
+      return newCart
+    })
+  }
+
   const handleRequestLoan = () => {
     if (!loanDate || !deliveryDate) {
       Swal.fire(
@@ -153,12 +161,13 @@ const NewLoan = () => {
                       </div>
                     ) : (
                       <div>
-                        <table className="table table-striped">
+                        <table className="table table-striped text-center">
                           <thead>
                             <tr>
                               <th>Dispositivo</th>
                               <th>Descripción</th>
                               <th>Estado Solicitado</th>
+                              <th>Acción</th> {/* Nueva columna */}
                             </tr>
                           </thead>
                           <tbody>
@@ -167,10 +176,20 @@ const NewLoan = () => {
                                 <td>{item.nombre}</td>
                                 <td>{item.descripcion || 'Descripción no disponible'}</td>
                                 <td>{item.requestedState}</td>
+                                <td>
+                                  <CButton
+                                    color="danger"
+                                    size="sm"
+                                    onClick={() => handleRemoveFromCart(index)}
+                                  >
+                                    X
+                                  </CButton>
+                                </td>
                               </tr>
                             ))}
                           </tbody>
                         </table>
+
                         <CRow className="mb-4">
                           <CCol xs>
                             <label htmlFor="loanDate">Fecha de Préstamo:</label>
@@ -202,7 +221,31 @@ const NewLoan = () => {
                           <CCol xs="auto">
                             <CButton
                               color="primary"
-                              onClick={handleRequestLoan}
+                              onClick={() => {
+                                if (!loanDate || !deliveryDate) {
+                                  Swal.fire(
+                                    'Advertencia',
+                                    'Por favor, completa tanto la fecha de préstamo como la fecha de entrega antes de solicitar el préstamo.',
+                                    'warning',
+                                  )
+                                  return
+                                }
+
+                                Swal.fire({
+                                  title: '¿Estás seguro de pedir este préstamo?',
+                                  text: 'No podrás eliminar la solicitud una vez enviada.',
+                                  icon: 'warning',
+                                  showCancelButton: true,
+                                  confirmButtonColor: '#3085d6',
+                                  cancelButtonColor: '#d33',
+                                  confirmButtonText: 'Sí, solicitar',
+                                  cancelButtonText: 'Cancelar',
+                                }).then((result) => {
+                                  if (result.isConfirmed) {
+                                    handleRequestLoan()
+                                  }
+                                })
+                              }}
                               disabled={cart.length === 0}
                             >
                               Pedir Préstamo
