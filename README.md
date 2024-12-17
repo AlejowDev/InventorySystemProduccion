@@ -29,3 +29,19 @@ Roles
 2. Admin
 3. Moderator
 4. Student
+
+Accounts
+
+Administrador
+Administrador
+
+superadmin
+superadmin
+
+moderator
+moderator
+
+student
+student
+
+------------------------------------------------------------------------------------------------------------------------
