@@ -72,6 +72,7 @@ const Loan = {
         loans.deliveryDate, 
         loans.approval, 
         loans.state,
+        loans.equipmentObservations,
         loans.dateRegister, -- Agregamos la columna dateRegister
         GROUP_CONCAT(loan_devices.device_serial) AS devices,
         GROUP_CONCAT(loan_devices.device_name) AS deviceNames, 
@@ -167,6 +168,17 @@ const Loan = {
     );
   },
 
+  updateObservations: (id, loanData, callback) => {
+    const sql = "UPDATE loans SET equipmentObservations = ? WHERE id = ? AND equipmentObservations IS NULL";
+    // La condición `equipmentObservations IS NULL` garantiza que solo se actualice si no había observaciones antes, es decir, solo una vez.
+    
+    db.query(sql, [loanData.equipmentObservations, id], (err, result) => {
+      if (err) return callback(err);
+      callback(null, result);
+    });
+  },
+
+
   findNextAvailableDateForDevice: (serial, callback) => {
     const query = `
       SELECT loans.deliveryDate FROM loans
@@ -192,5 +204,6 @@ const Loan = {
     });
   }
 };
+
 
 module.exports = Loan;

@@ -7,9 +7,12 @@ const {
     updateLoan,
     getNextAvailableDateForDevice // Importar la nueva función de controlador
 } = require('../controllers/loansController');
+const { updateObservations } = require('../controllers/loansController');
 
 // Obtener todos los préstamos
 router.get('/loans', getAllLoans);
+
+router.put('/loans/:id/observations', updateObservations);
 
 // Crear nuevo préstamo
 router.post('/loans', createLoan);

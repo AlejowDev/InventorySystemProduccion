@@ -22,13 +22,12 @@ import {
   CFormSelect,
 } from '@coreui/react'
 import Swal from 'sweetalert2'
-
 import CIcon from '@coreui/icons-react'
 import { cilPencil, cilTrash, cilSpreadsheet } from '@coreui/icons'
 import { saveAs } from 'file-saver'
 import * as XLSX from 'xlsx'
 
-const AdminLoans = () => {
+const ModeradorLoans = () => {
   const [loans, setLoans] = useState([])
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedLoan, setSelectedLoan] = useState(null)
@@ -47,7 +46,18 @@ const AdminLoans = () => {
     axios
       .get('http://localhost:8081/api/loans')
       .then((response) => {
-        const sortedLoans = response.data.sort((a, b) => new Date(b.dateRegister) - new Date(a.dateRegister))
+        const sortedLoans = response.data.sort((a, b) => {
+          const aIsFinalizado = a.approval === 'Finalizado' ? 1 : 0
+          const bIsFinalizado = b.approval === 'Finalizado' ? 1 : 0
+        
+          // Primero separar finalizados de no finalizados
+          if (aIsFinalizado !== bIsFinalizado) {
+            return aIsFinalizado - bIsFinalizado
+          }
+        
+          // Si ambos son igual respecto a finalizado, ordena por fecha
+          return new Date(b.dateRegister) - new Date(a.dateRegister)
+        })
         setLoans(sortedLoans)
       })
       .catch((error) => {
@@ -157,6 +167,7 @@ const AdminLoans = () => {
           month: '2-digit',
           year: 'numeric',
         }),
+        Observaciones: loan.equipmentObservations || '',
         Aprobación: loan.approval,
         Estado: loan.state,
       }
@@ -221,6 +232,8 @@ const AdminLoans = () => {
                 >
                   <option value="">Filtrar por Estado (Todos)</option>
                   <option value="Disponible">Disponible</option>
+                  <option value="Entregado en buen estado">Entregado en buen estado</option>
+                  <option value="Entregado en mal estado">Entregado en mal estado</option>
                   <option value="Ocupado">Ocupado</option>
                   <option value="Por Agendar">Por Agendar</option>
                 </CFormSelect>
@@ -231,16 +244,27 @@ const AdminLoans = () => {
               <CTableHead className="text-nowrap text-center">
                 <CTableRow>
                   <CTableHeaderCell className="bg-body-tertiary"></CTableHeaderCell>
-                  <CTableHeaderCell className="bg-body-tertiary">Serial Dispositivos</CTableHeaderCell>
-                  <CTableHeaderCell className="bg-body-tertiary">Nombres Dispositivos</CTableHeaderCell>
+                  <CTableHeaderCell className="bg-body-tertiary">
+                    Serial Dispositivos
+                  </CTableHeaderCell>
+                  <CTableHeaderCell className="bg-body-tertiary">
+                    Nombres Dispositivos
+                  </CTableHeaderCell>
                   <CTableHeaderCell className="bg-body-tertiary">Numero documento</CTableHeaderCell>
-                  <CTableHeaderCell className="bg-body-tertiary">Nombre estudiante</CTableHeaderCell>
+                  <CTableHeaderCell className="bg-body-tertiary">
+                    Nombre estudiante
+                  </CTableHeaderCell>
                   <CTableHeaderCell className="bg-body-tertiary">Numero celular</CTableHeaderCell>
-                  <CTableHeaderCell className="bg-body-tertiary">Codigo estudiantil</CTableHeaderCell>
-                  {/* Nueva columna para fecha de registro */}
+                  <CTableHeaderCell className="bg-body-tertiary">
+                    Codigo estudiantil
+                  </CTableHeaderCell>
                   <CTableHeaderCell className="bg-body-tertiary">Fecha Registro</CTableHeaderCell>
-                  <CTableHeaderCell className="bg-body-tertiary">Fecha de Préstamo</CTableHeaderCell>
+                  <CTableHeaderCell className="bg-body-tertiary">
+                    Fecha de Préstamo
+                  </CTableHeaderCell>
                   <CTableHeaderCell className="bg-body-tertiary">Fecha de Entrega</CTableHeaderCell>
+                  {/* Nueva columna de Observaciones */}
+                  <CTableHeaderCell className="bg-body-tertiary">Observaciones</CTableHeaderCell>
                   <CTableHeaderCell className="bg-body-tertiary">Aprobación</CTableHeaderCell>
                   <CTableHeaderCell className="bg-body-tertiary">Estado</CTableHeaderCell>
                   <CTableHeaderCell className="bg-body-tertiary">Acciones</CTableHeaderCell>
@@ -294,21 +318,18 @@ const AdminLoans = () => {
                     <CTableDataCell style={{ borderColor: 'white' }}>
                       {loan.receivingUserStudentNumber}
                     </CTableDataCell>
-                    {/* Mostrar fecha de registro */}
                     <CTableDataCell style={{ borderColor: 'white' }}>
-                      {loan.dateRegister ? (
-                        new Date(loan.dateRegister).toLocaleString('es-CO', {
-                          hour: 'numeric',
-                          minute: 'numeric',
-                          second: 'numeric',
-                          hour12: true,
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: 'numeric',
-                        })
-                      ) : (
-                        'N/A'
-                      )}
+                      {loan.dateRegister
+                        ? new Date(loan.dateRegister).toLocaleString('es-CO', {
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            second: 'numeric',
+                            hour12: true,
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                          })
+                        : 'N/A'}
                     </CTableDataCell>
                     <CTableDataCell style={{ borderColor: 'white' }}>
                       {new Date(loan.loanDate).toLocaleString('es-CO', {
@@ -332,20 +353,31 @@ const AdminLoans = () => {
                         year: 'numeric',
                       })}
                     </CTableDataCell>
+                    {/* Mostrar observaciones */}
+                    <CTableDataCell
+                      style={{
+                        borderColor: 'white',
+                        whiteSpace: 'normal',
+                        wordBreak: 'break-word',
+                      }}
+                    >
+                      {loan.equipmentObservations || 'N/A'}
+                    </CTableDataCell>
                     <CTableDataCell
                       style={{
                         borderColor: 'white',
                         color:
-                          loan.approval === 'Aprobado' || loan.approval === 'En uso'
-                            ? '#0cff00'
-                            : loan.approval === 'Pendiente' || loan.approval === 'Finalizado'
-                            ? '#007cff'
-                            : '#ff0000',
+                          loan.approval === 'Finalizado'
+                            ? 'gray'
+                            : loan.approval === 'Aprobado' || loan.approval === 'En uso'
+                              ? '#0cff00'
+                              : loan.approval === 'Pendiente'
+                                ? '#007cff'
+                                : '#ff0000',
                       }}
                     >
                       {loan.approval}
                     </CTableDataCell>
-
                     <CTableDataCell
                       style={{
                         borderColor: 'white',
@@ -353,12 +385,19 @@ const AdminLoans = () => {
                           loan.state === 'Por Agendar'
                             ? '#ffb200'
                             : loan.state === 'Ocupado'
-                            ? 'gray'
-                            : '#0cff00',
+                              ? 'gray'
+                              : loan.state === 'Entregado en buen estado'
+                                ? 'gray'
+                                : loan.state === 'Entregado en mal estado'
+                                  ? 'red'
+                                  : loan.state === 'Disponible'
+                                    ? '#0cff00'
+                                    : '#0cff00', // Color por defecto si el estado no coincide con ninguno
                       }}
                     >
                       {loan.state}
                     </CTableDataCell>
+
                     <CTableDataCell style={{ borderColor: 'white' }}>
                       <CButton
                         className="custom-btn-edit me-2"
@@ -407,6 +446,8 @@ const AdminLoans = () => {
               <CFormSelect label="Estado" value={state} onChange={(e) => setState(e.target.value)}>
                 <option disabled>Seleccione estado</option>
                 <option value="Disponible">Disponible</option>
+                <option value="Entregado en buen estado">Entregado en buen estado</option>
+                <option value="Entregado en mal estado">Entregado en mal estado</option>
                 <option value="Ocupado">Ocupado</option>
                 <option value="Por Agendar">Por Agendar</option>
               </CFormSelect>
@@ -426,4 +467,4 @@ const AdminLoans = () => {
   )
 }
 
-export default AdminLoans
+export default ModeradorLoans

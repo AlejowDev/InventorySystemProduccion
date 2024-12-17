@@ -68,6 +68,24 @@ const updateLoan = (req, res) => {
     });
 };
 
+const updateObservations = (req, res) => {
+    const { id } = req.params;
+    const { equipmentObservations } = req.body;
+  
+    // Asegúrate de validar que el estado sea "Ocupado" y que no tenga observaciones antes, si lo deseas
+    const loanData = { equipmentObservations };
+  
+    Loan.updateObservations(id, loanData, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Loan not found' });
+      }
+      res.status(200).json({ message: 'Observations updated successfully' });
+    });
+  };
+
 // Obtener la próxima fecha de disponibilidad para un dispositivo
 const getNextAvailableDateForDevice = (req, res) => {
     const { serial } = req.params;
@@ -112,5 +130,6 @@ module.exports = {
     createLoan,
     deleteLoan,
     updateLoan,
-    getNextAvailableDateForDevice // Exportar la nueva función
+    getNextAvailableDateForDevice,
+    updateObservations
 };
