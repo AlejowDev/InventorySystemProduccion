@@ -204,7 +204,7 @@ const ToolsTable = () => {
                     <CTableHeaderCell className="bg-body-tertiary">Descripción</CTableHeaderCell>
                     <CTableHeaderCell className="bg-body-tertiary">Estado</CTableHeaderCell> {/* Nueva columna */}
                     <CTableHeaderCell className="bg-body-tertiary">Imagen</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary">Acciones</CTableHeaderCell>
+                    
                   </CTableRow>
                 </CTableHead>
                 <CTableBody className="text-nowrap text-center">
@@ -223,14 +223,6 @@ const ToolsTable = () => {
                             onClick={() => handleImageClick(`http://localhost:8081/${tool.imagen}`)}
                           />
                         )}
-                      </CTableDataCell>
-                      <CTableDataCell>
-                        <CButton className="custom-btn-edit me-2" size="sm" onClick={() => handleEdit(tool)}>
-                          <CIcon icon={cilPencil} />
-                        </CButton>{' '}
-                        <CButton className="custom-btn-delete me-2" size="sm" onClick={() => handleDelete(tool.serial)}>
-                          <CIcon icon={cilTrash} />
-                        </CButton>
                       </CTableDataCell>
                     </CTableRow>
                   ))}

@@ -47,12 +47,6 @@ const adminNav = (navigate) => [
     icon: <CIcon icon={cilList} customClassName="nav-icon" />,
   },
   {
-    component: CNavItem,
-    name: 'Nuevo Usuario',
-    to: '/admin/newusers',
-    icon: <CIcon icon={cilUserFollow} customClassName="nav-icon" />,
-  },
-  {
     component: CNavTitle,
     name: 'INVENTARIO',
   },
